@@ -1,0 +1,14 @@
+{
+  "name": "eux-auth-demo",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "npx http-server -a localhost -p 8081",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+  },
+  "devDependencies": {
+  }
+}
