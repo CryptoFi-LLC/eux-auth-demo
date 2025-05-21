@@ -1,7 +1,3 @@
-document.getElementById("reloadButton").addEventListener("click", function () {
-  window.location.replace("/");
-});
-
 const outputElement = document.getElementById("output");
 
 function log(message, data) {
