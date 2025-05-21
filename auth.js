@@ -27,14 +27,14 @@ window.onload = async function () {
 
     if (hasCode) {
       const code = urlParams.get("code");
-      log("ℹ️ Code parameter found:", code);
+      log("ℹ️ Found code parameter in URL:", code);
 
       const requestBody = {
         code: code,
       };
 
       log("➡️ Sending POST request to /dbp/auth:", requestBody);
-      
+
       const response = await fetch(dbpAuthEndpoint, {
         method: "POST",
         headers: {
