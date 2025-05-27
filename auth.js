@@ -2,6 +2,10 @@ import { log } from "./logger.js";
 
 import { base64URLEncode, generateRandomString } from "./pkce.js";
 
+// When PKCE is required, the verifier code must be persisted in browser storage
+// until the user is redirected back to the app after authentication. Enable ONE of the
+// modules below to test different options.
+
 // import { getStorageValue, setStorageValue, clearStorageValue } from "./localStorage.js"
 // import { getStorageValue, setStorageValue, clearStorageValue } from "./cookies.js"
 // import { getStorageValue, setStorageValue, clearStorageValue } from "./storageAccess.js"
@@ -14,8 +18,8 @@ window.onload = async function () {
 
   try {
     if (!hasCode) {
-      log("ℹ️ No code parameter found in URL, initiating auth flow...", null);
-      log("➡️ Sending GET request to /dbp/auth...", null);
+      log(`ℹ️ No code parameter found in URL, initiating auth flow...`, null);
+      log(`➡️ Sending GET request to /dbp/auth...`, null);
 
       const response = await fetch(dbpAuthEndpoint, {
         method: "GET",
@@ -44,7 +48,7 @@ window.onload = async function () {
       //   log("🧚 PKCE required, code_challenge URL parameter added:", codeChallenge);
       // }
 
-      log("ℹ️ Redirecting to auth URL...", redirectUrl.toString());
+      log(`ℹ️ Redirecting to auth URL...`, redirectUrl.toString());
 
       setTimeout(() => {
         // redirect to auth URL
@@ -54,7 +58,7 @@ window.onload = async function () {
 
     if (hasCode) {
       const code = urlParams.get("code");
-      log("ℹ️ Found code parameter in URL:", code);
+      log(`ℹ️ Found code parameter in URL:`, code);
 
       // const codeVerifier = getCookie("verifier");
       const requestBody = {
@@ -66,7 +70,7 @@ window.onload = async function () {
       //   requestBody.code_verifier = codeVerifier;
       // }
 
-      log("➡️ Sending POST request to /dbp/auth:", requestBody);
+      log(`➡️ Sending POST request to /dbp/auth:`, requestBody);
 
       const response = await fetch(dbpAuthEndpoint, {
         method: "POST",
@@ -77,9 +81,9 @@ window.onload = async function () {
       });
 
       const data = await response.json();
-      log("✅ Auth successful:", data);
+      log(`✅ Auth successful:`, data);
     }
   } catch (error) {
-    log("❌ Auth error:", error.message);
+    log(`❌ Auth error:`, error.message);
   }
 };
