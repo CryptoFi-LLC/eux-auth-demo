@@ -1,0 +1,2 @@
+const storageType = 'storageAccess';
+
