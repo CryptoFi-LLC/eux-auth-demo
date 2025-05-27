@@ -1,7 +1,6 @@
 
 
-// Simple random string generator for code verifier
-function generateRandomString(length) {
+export function generateRandomString(length) {
   const charset =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~";
   let result = "";
@@ -12,8 +11,12 @@ function generateRandomString(length) {
 }
 
 // Simplified base64 URL encoding (not suitable for production)
-function base64URLEncode(str) {
-  // In a real implementation, you'd use a proper base64 encoding and URL-safe transformation
-  // This is just a placeholder to show the concept
+export function base64URLEncode(str) {
   return btoa(str).replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");
+}
+
+export function addCodeChallengeToUrl(url, codeChallenge) {
+  const urlObj = new URL(url);
+  urlObj.searchParams.set("code_challenge", codeChallenge);
+  return urlObj.toString();
 }

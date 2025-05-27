@@ -13,19 +13,27 @@
     <div id="output"></div>
 
     <button id="reloadButton">Reload</button>
+    <button id="">Clear storage</button>
 
-    <script src="./auth.js"></script>
-    <script src="./logger.js"></script>
-    <script src="./pkce.js"></script>
-    <script src="./storage.js"></script>
+    <p>Storage engine: <span id="storageEngine">Not enabled</span></p>
+
+    <script src="./auth.js" type="module"></script>
+    
+    <!-- When PKCE is required, the verifier code must be persisted in browser storage
+    until the user is redirected back to the app after authentication. Enable ONE of the
+    scripts below to test different options. -->
+    
+
 
     <script>
       document
         .getElementById("reloadButton")
         .addEventListener("click", function () {
           window.location.replace("/");
-          clearCookie("verifier");
+          clearStorageValue("verifier");
         });
+
+      document.getElementById("storageEngine").innerText = (typeof storageType !== 'undefined' ? storageType : "Not enabled!!");
     </script>
   </body>
 </html>

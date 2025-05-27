@@ -1,3 +1,11 @@
+import { log } from "./logger.js";
+
+import { base64URLEncode, generateRandomString } from "./pkce.js";
+
+// import { getStorageValue, setStorageValue, clearStorageValue } from "./localStorage.js"
+// import { getStorageValue, setStorageValue, clearStorageValue } from "./cookies.js"
+// import { getStorageValue, setStorageValue, clearStorageValue } from "./storageAccess.js"
+
 window.onload = async function () {
   const dbpAuthEndpoint = "https://api.cryptofi-dev.com/v2/dbp/auth";
   const urlParams = new URLSearchParams(window.location.search);
@@ -18,23 +26,23 @@ window.onload = async function () {
       // TODO check if PKCE is required
       const redirectUrl = new URL(data.redirect_url);
 
-      if (redirectUrl.searchParams.get("pkce_required") === "True") {
-        // If PKCE is required, we need to generate a challenge
-        // Since we can't use pkce-challenge directly in vanilla JS,
-        // we'll need to implement a simplified version or use a CDN
+      // if (redirectUrl.searchParams.get("pkce_required") === "True") {
+      //   // If PKCE is required, we need to generate a challenge
+      //   // Since we can't use pkce-challenge directly in vanilla JS,
+      //   // we'll need to implement a simplified version or use a CDN
 
-        // This is a placeholder - in production you'd need a proper PKCE implementation
-        const codeVerifier = generateRandomString(50);
-        const codeChallenge = base64URLEncode(codeVerifier); // This is simplified
+      //   // This is a placeholder - in production you'd need a proper PKCE implementation
+      //   const codeVerifier = generateRandomString(50);
+      //   const codeChallenge = base64URLEncode(codeVerifier); // This is simplified
 
-        // Store code verifier in cookie
-        document.cookie = `verifier=${codeVerifier}; path=/; max-age=3600`;
+      //   // Store code verifier in cookie
+      //   document.cookie = `verifier=${codeVerifier}; path=/; max-age=3600`;
 
-        // Add code challenge to redirect URL
-        redirectUrl.searchParams.set("code_challenge", codeChallenge);
+      //   // Add code challenge to redirect URL
+      //   redirectUrl.searchParams.set("code_challenge", codeChallenge);
 
-        log("🧚 PKCE required, code_challenge URL parameter added:", codeChallenge);
-      }
+      //   log("🧚 PKCE required, code_challenge URL parameter added:", codeChallenge);
+      // }
 
       log("ℹ️ Redirecting to auth URL...", redirectUrl.toString());
 
@@ -48,15 +56,15 @@ window.onload = async function () {
       const code = urlParams.get("code");
       log("ℹ️ Found code parameter in URL:", code);
 
-      const codeVerifier = getCookie("verifier");
+      // const codeVerifier = getCookie("verifier");
       const requestBody = {
         code: code,
       };
 
       // Add code_verifier to request if it exists
-      if (codeVerifier) {
-        requestBody.code_verifier = codeVerifier;
-      }
+      // if (codeVerifier) {
+      //   requestBody.code_verifier = codeVerifier;
+      // }
 
       log("➡️ Sending POST request to /dbp/auth:", requestBody);
 

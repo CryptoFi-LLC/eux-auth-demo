@@ -1,6 +1,6 @@
-const storageType = "localStorage";
+export const storageType = "localStorage";
 
-function getStorageValue(name) {
+export function getStorageValue(name) {
   try {
     return localStorage.getItem(name);
   } catch (error) {
@@ -9,7 +9,7 @@ function getStorageValue(name) {
   }
 }
 
-function clearStorageValue(name) {
+export function clearStorageValue(name) {
   try {
     localStorage.removeItem(name);
   } catch (error) {
@@ -17,7 +17,7 @@ function clearStorageValue(name) {
   }
 }
 
-function setStorageValue(name, value) {
+export function setStorageValue(name, value) {
   try {
     localStorage.setItem(name, value);
   } catch (error) {
