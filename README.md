@@ -5,3 +5,7 @@ A vanilla JS implementation of the [EUX](https://github.com/CryptoFi-LLC/dbp-fro
 ## Dev
 
 Run `npx http-server` to launch locally.
+
+## Browser Storage
+
+Some DBPs require PKCE, which requires persisting a code verifier in browser storage. See **pkce.js** for details.  

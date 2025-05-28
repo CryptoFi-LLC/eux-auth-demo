@@ -13,29 +13,19 @@
     <div id="output"></div>
 
     <button id="reloadButton">Reload</button>
-    <button id="clearStorageButton" disabled>Clear storage</button>
 
     <p>Storage engine: <span id="storageEngine" /></p>
 
     <script src="./auth.js" type="module"></script>
 
     <script type="module">
-      const reloadButton = document.getElementById("reloadButton");
-      const isStorageEnabled =
-        typeof storageType !== "undefined" && storageType !== null;
+      import { getStorageType } from "./pkce.js";
 
-      reloadButton.addEventListener("click", function () {
+      document.getElementById("reloadButton").addEventListener("click", function () {
         window.location.replace("/");
-        clearStorageValue("verifier");
       });
 
-      if (isStorageEnabled) {
-        document.getElementById("clearStorageButton").disabled = false;
-      }
-
-      document.getElementById("storageEngine").innerText = isStorageEnabled
-        ? storageType
-        : "Not enabled";
+      document.getElementById("storageEngine").innerText = getStorageType();
     </script>
   </body>
 </html>

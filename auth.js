@@ -1,14 +1,9 @@
 import { log } from "./logger.js";
-
-import { base64URLEncode, generateRandomString } from "./pkce.js";
-
-// When PKCE is required, the verifier code must be persisted in browser storage
-// until the user is redirected back to the app after authentication. Enable ONE of the
-// modules below to test different options.
-
-// import { getStorageValue, setStorageValue, clearStorageValue } from "./localStorage.js"
-// import { getStorageValue, setStorageValue, clearStorageValue } from "./cookies.js"
-// import { getStorageValue, setStorageValue, clearStorageValue } from "./storageAccess.js"
+import {
+  addCodeChallenge,
+  clearCodeVerifier,
+  getCodeVerifier,
+} from "./pkce.js";
 
 window.onload = async function () {
   const dbpAuthEndpoint = "https://api.cryptofi-dev.com/v2/dbp/auth";
@@ -24,29 +19,13 @@ window.onload = async function () {
       const response = await fetch(dbpAuthEndpoint, {
         method: "GET",
       });
-
       const data = await response.json();
+      let redirectUrl = new URL(data.redirect_url);
 
-      // TODO check if PKCE is required
-      const redirectUrl = new URL(data.redirect_url);
-
-      // if (redirectUrl.searchParams.get("pkce_required") === "True") {
-      //   // If PKCE is required, we need to generate a challenge
-      //   // Since we can't use pkce-challenge directly in vanilla JS,
-      //   // we'll need to implement a simplified version or use a CDN
-
-      //   // This is a placeholder - in production you'd need a proper PKCE implementation
-      //   const codeVerifier = generateRandomString(50);
-      //   const codeChallenge = base64URLEncode(codeVerifier); // This is simplified
-
-      //   // Store code verifier in cookie
-      //   document.cookie = `verifier=${codeVerifier}; path=/; max-age=3600`;
-
-      //   // Add code challenge to redirect URL
-      //   redirectUrl.searchParams.set("code_challenge", codeChallenge);
-
-      //   log("🧚 PKCE required, code_challenge URL parameter added:", codeChallenge);
-      // }
+      // handle PKCE if required
+      if (redirectUrl.searchParams.get("pkce_required") === "True") {
+        redirectUrl = addCodeChallenge(redirectUrl);
+      }
 
       log(`ℹ️ Redirecting to auth URL...`, redirectUrl.toString());
 
@@ -60,15 +39,11 @@ window.onload = async function () {
       const code = urlParams.get("code");
       log(`ℹ️ Found code parameter in URL:`, code);
 
-      // const codeVerifier = getCookie("verifier");
-      const requestBody = {
-        code: code,
-      };
-
       // Add code_verifier to request if it exists
-      // if (codeVerifier) {
-      //   requestBody.code_verifier = codeVerifier;
-      // }
+      const verifier = getCodeVerifier();
+      const requestBody = verifier
+        ? { code, code_verifier: verifier } // pkce
+        : { code }; // non pkce
 
       log(`➡️ Sending POST request to /dbp/auth:`, requestBody);
 
@@ -82,6 +57,8 @@ window.onload = async function () {
 
       const data = await response.json();
       log(`✅ Auth successful:`, data);
+
+      clearCodeVerifier();
     }
   } catch (error) {
     log(`❌ Auth error:`, error.message);
