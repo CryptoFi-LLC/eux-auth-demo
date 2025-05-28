@@ -1,6 +1,6 @@
 const outputElement = document.getElementById("output");
 
-function log(message, data) {
+export function log(message, data) {
   const logEntry = document.createElement("div");
   logEntry.classList.add("log-entry");
 

@@ -1,3 +1,10 @@
+import { log } from "./logger.js";
+import {
+  addCodeChallenge,
+  clearCodeVerifier,
+  getCodeVerifier,
+} from "./pkce.js";
+
 window.onload = async function () {
   const dbpAuthEndpoint = "https://api.cryptofi-dev.com/v2/dbp/auth";
   const urlParams = new URLSearchParams(window.location.search);
@@ -6,37 +13,21 @@ window.onload = async function () {
 
   try {
     if (!hasCode) {
-      log("ℹ️ No code parameter found in URL, initiating auth flow...", null);
-      log("➡️ Sending GET request to /dbp/auth...", null);
+      log(`ℹ️ No code parameter found in URL, initiating auth flow...`, null);
+      log(`➡️ Sending GET request to /dbp/auth...`, null);
 
       const response = await fetch(dbpAuthEndpoint, {
         method: "GET",
       });
-
       const data = await response.json();
+      let redirectUrl = new URL(data.redirect_url);
 
-      // TODO check if PKCE is required
-      const redirectUrl = new URL(data.redirect_url);
-
+      // handle PKCE if required
       if (redirectUrl.searchParams.get("pkce_required") === "True") {
-        // If PKCE is required, we need to generate a challenge
-        // Since we can't use pkce-challenge directly in vanilla JS,
-        // we'll need to implement a simplified version or use a CDN
-
-        // This is a placeholder - in production you'd need a proper PKCE implementation
-        const codeVerifier = generateRandomString(50);
-        const codeChallenge = base64URLEncode(codeVerifier); // This is simplified
-
-        // Store code verifier in cookie
-        document.cookie = `verifier=${codeVerifier}; path=/; max-age=3600`;
-
-        // Add code challenge to redirect URL
-        redirectUrl.searchParams.set("code_challenge", codeChallenge);
-
-        log("🧚 PKCE required, code_challenge URL parameter added:", codeChallenge);
+        redirectUrl = addCodeChallenge(redirectUrl);
       }
 
-      log("ℹ️ Redirecting to auth URL...", redirectUrl.toString());
+      log(`ℹ️ Redirecting to auth URL...`, redirectUrl.toString());
 
       setTimeout(() => {
         // redirect to auth URL
@@ -46,19 +37,15 @@ window.onload = async function () {
 
     if (hasCode) {
       const code = urlParams.get("code");
-      log("ℹ️ Found code parameter in URL:", code);
-
-      const codeVerifier = getCookie("verifier");
-      const requestBody = {
-        code: code,
-      };
+      log(`ℹ️ Found code parameter in URL:`, code);
 
       // Add code_verifier to request if it exists
-      if (codeVerifier) {
-        requestBody.code_verifier = codeVerifier;
-      }
+      const verifier = getCodeVerifier();
+      const requestBody = verifier
+        ? { code, code_verifier: verifier } // pkce
+        : { code }; // non pkce
 
-      log("➡️ Sending POST request to /dbp/auth:", requestBody);
+      log(`➡️ Sending POST request to /dbp/auth:`, requestBody);
 
       const response = await fetch(dbpAuthEndpoint, {
         method: "POST",
@@ -69,9 +56,11 @@ window.onload = async function () {
       });
 
       const data = await response.json();
-      log("✅ Auth successful:", data);
+      log(`✅ Auth successful:`, data);
+
+      clearCodeVerifier();
     }
   } catch (error) {
-    log("❌ Auth error:", error.message);
+    log(`❌ Auth error:`, error.message);
   }
 };

@@ -14,18 +14,18 @@
 
     <button id="reloadButton">Reload</button>
 
-    <script src="./auth.js"></script>
-    <script src="./logger.js"></script>
-    <script src="./pkce.js"></script>
-    <script src="./storage.js"></script>
+    <p>Storage engine: <span id="storageEngine" /></p>
 
-    <script>
-      document
-        .getElementById("reloadButton")
-        .addEventListener("click", function () {
-          window.location.replace("/");
-          clearCookie("verifier");
-        });
+    <script src="./auth.js" type="module"></script>
+
+    <script type="module">
+      import { getStorageType } from "./pkce.js";
+
+      document.getElementById("reloadButton").addEventListener("click", function () {
+        window.location.replace("/");
+      });
+
+      document.getElementById("storageEngine").innerText = getStorageType();
     </script>
   </body>
 </html>
