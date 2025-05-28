@@ -12,8 +12,9 @@ import {
   setStorageValue,
   clearStorageValue,
   storageType,
-} from "./localStorage.js";
-// import { getStorageValue, setStorageValue, clearStorageValue, storageType } from "./cookies.js"
+} from "./storage/localStorage.js";
+// import { getStorageValue, setStorageValue, clearStorageValue, storageType } from "./storage/cookies.js"
+// import { getStorageValue, setStorageValue, clearStorageValue, storageType } from "./storage/windowName.js"
 
 import { log } from "./logger.js";
 
@@ -51,7 +52,7 @@ export function getCodeVerifier() {
 
 export function clearCodeVerifier() {
   clearStorageValue("verifier");
-  log(`🧹 Code verifier cleared from storage`);
+  // log(`🧹 Code verifier cleared from storage`);
 }
 
 export function getStorageType() {
