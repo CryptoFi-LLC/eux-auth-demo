@@ -1,7 +1,3 @@
-/**
- * Example implementation of PKCE (Proof Key for Code Exchange) for OAuth 2.0.
- * ⚠️ Not suitable for production. ⚠️
- */
 
 // When a DBP requires PKCE, the verifier code must be saved in browser storage before the user is redirected
 // to the auth URL, then retrieved when they arrive back at the callback URL (defined by the IDP). Enable ONE 
@@ -18,30 +14,17 @@ import {
 
 import { log } from "./logger.js";
 
-function generateRandomString(length) {
-  const charset =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~";
-  let result = "";
-  for (let i = 0; i < length; i++) {
-    result += charset.charAt(Math.floor(Math.random() * charset.length));
-  }
-  return result;
-}
 
-function base64URLEncode(str) {
-  return btoa(str).replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");
-}
 
-export function addCodeChallenge(url) {
-  const codeVerifier = generateRandomString(50);
-  const codeChallenge = base64URLEncode(codeVerifier); // This is simplified
+export async function addCodeChallenge(url) {
+    const { code_verifier, code_challenge } = await pkceChallenge(50);
 
-  setStorageValue("verifier", codeVerifier);
+  setStorageValue("verifier", code_verifier);
 
   // Add code challenge to redirect URL
-  url.searchParams.set("code_challenge", codeChallenge);
+  url.searchParams.set("code_challenge", code_challenge);
 
-  log(`🧚 PKCE required, code_challenge URL parameter added:`, codeChallenge);
+  log(`🧚 PKCE required, code_challenge URL parameter added:`, code_challenge);
 
   return url;
 }
@@ -52,7 +35,7 @@ export function getCodeVerifier() {
 
 export function clearCodeVerifier() {
   clearStorageValue("verifier");
-  // log(`🧹 Code verifier cleared from storage`);
+  log(`🧹 Code verifier cleared from storage`);
 }
 
 export function getStorageType() {

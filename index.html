@@ -22,7 +22,7 @@
       import { getStorageType } from "./pkce.js";
 
       document.getElementById("reloadButton").addEventListener("click", function () {
-        window.location.replace("/");
+        window.location.replace(`${window.location.origin}${window.location.pathname}`);
       });
 
       document.getElementById("storageEngine").innerText = getStorageType();
