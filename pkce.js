@@ -13,6 +13,7 @@ import {
 // import { getStorageValue, setStorageValue, clearStorageValue, storageType } from "./storage/windowName.js"
 
 import { log } from "./logger.js";
+import pkceChallenge from "./pkce-challenge.js";
 
 export async function addCodeChallenge(url) {
     const { code_verifier, code_challenge } = await pkceChallenge(50);
