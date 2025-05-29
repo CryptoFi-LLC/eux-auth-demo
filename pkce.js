@@ -14,8 +14,6 @@ import {
 
 import { log } from "./logger.js";
 
-
-
 export async function addCodeChallenge(url) {
     const { code_verifier, code_challenge } = await pkceChallenge(50);
 
