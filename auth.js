@@ -24,7 +24,7 @@ window.onload = async function () {
 
       // handle PKCE if required
       if (redirectUrl.searchParams.get("pkce_required") === "True") {
-        redirectUrl = addCodeChallenge(redirectUrl);
+        redirectUrl = await addCodeChallenge(redirectUrl);
       }
 
       log(`ℹ️ Redirecting to auth URL...`, redirectUrl.toString());
