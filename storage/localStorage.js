@@ -1,13 +1,26 @@
+/**
+ * @desc Async implementation to match other storage modules.
+ */
+
 export const storageType = "localStorage";
 
-export function getStorageValue(name) {
-  return localStorage.getItem(name);
+export async function getStorageValue(name) {
+  return new Promise((resolve) => {
+    const value = localStorage.getItem(name);
+    resolve(value);
+  });
 }
 
-export function clearStorageValue(name) {
-  localStorage.removeItem(name);
+export async function clearStorageValue(name) {
+  return new Promise((resolve) => {
+    localStorage.removeItem(name);
+    resolve();
+  });
 }
 
-export function setStorageValue(name, value) {
-  localStorage.setItem(name, value);
+export async function setStorageValue(name, value) {
+  return new Promise((resolve) => {
+    localStorage.setItem(name, value);
+    resolve();
+  });
 }

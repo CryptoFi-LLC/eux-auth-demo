@@ -5,7 +5,7 @@ import { log } from "./logger.js";
 
 // When a DBP requires PKCE, the verifier code must be saved in browser storage before the user is redirected
 // to the auth URL, then retrieved when they arrive back at the callback URL (defined by the IDP). Enable ONE
-// of the modules below to compare options.
+// of the import paths below to compare options.
 
 // Local storage
 import {
@@ -13,7 +13,7 @@ import {
   clearStorageValue,
   storageType,
   setStorageValue
-} from "./storage/cacheAPI.js"; // One of: localStorage.js | cookies.js | windowName.js
+} from "./storage/cacheAPI.js"; // One of: localStorage.js | cookies.js | windowName.js | cacheAPI.js
 
 export { storageType };
 
