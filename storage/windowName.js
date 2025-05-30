@@ -1,6 +1,6 @@
 /**
- * @desc Stores a single value in the browser's window.name property.
- * Async implementation to match other storage modules.
+ * @desc Stores a single value in the browser's window.name property. Async implementation 
+ * to match other storage modules.
  */
 
 export const storageType = "windowName";
