@@ -10,6 +10,7 @@ import {
   getStorageValue,
   clearStorageValue,
   storageType,
+  setStorageValue
 } from "./storage/localStorage.js";
 
 // // Cookies
