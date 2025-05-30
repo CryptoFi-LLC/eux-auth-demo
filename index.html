@@ -14,10 +14,12 @@
 
     <button id="reloadButton">Reload</button>
 
-    <div style="margin-top: 2rem; font-style: italic;">
+    <div style="margin-top: 2rem; font-style: italic">
       <p>PKCE enabled: <span id="pkceEnabled">--</span></p>
-  
-      <p style="margin-bottom: 0;">Storage engine: <span id="storageEngine">--</span></p>
+
+      <p style="margin-bottom: 0">
+        Storage engine: <span id="storageEngine">--</span>
+      </p>
       <small>Only used when PKCE is enabled</small>
     </div>
 
@@ -28,9 +30,17 @@
     <script src="./auth.js" type="module"></script>
 
     <script type="module">
-      document.getElementById("reloadButton").addEventListener("click", function () {
-        window.location.replace(`${window.location.origin}${window.location.pathname}`);
-      });
+      import { storageType } from "./auth.js";
+
+      document
+        .getElementById("reloadButton")
+        .addEventListener("click", function () {
+          window.location.replace(
+            `${window.location.origin}${window.location.pathname}`
+          );
+        });
+
+      document.getElementById("storageEngine").innerText = storageType;
     </script>
   </body>
 </html>
