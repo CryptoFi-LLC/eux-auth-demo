@@ -13,7 +13,7 @@ import {
   clearStorageValue,
   storageType,
   setStorageValue
-} from "./storage/localStorage.js"; // One of: localStorage.js | cookies.js | windowName.js
+} from "./storage/windowName.js"; // One of: localStorage.js | cookies.js | windowName.js
 
 export { storageType };
 
