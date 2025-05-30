@@ -1,20 +1,32 @@
+/**
+ * @desc Async implementation to match other storage modules.
+ */
+
 export const storageType = "cookies";
 
-export function getStorageValue(name) {
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
+export async function getStorageValue(name) {
+  return new Promise((resolve) => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
 
-  if (parts.length === 2) {
-    return parts.pop().split(";").shift();
-  }
-
-  return null;
+    if (parts.length === 2) {
+      resolve(parts.pop().split(";").shift());
+    } else {
+      resolve(null);
+    }
+  });
 }
 
-export function clearStorageValue(name) {
-  document.cookie = `${name}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
+export async function clearStorageValue(name) {
+  return new Promise((resolve) => {
+    document.cookie = `${name}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
+    resolve();
+  });
 }
 
-export function setStorageValue(name, value) {
-  document.cookie = `${name}=${value}; path=/; max-age=3600`;
+export async function setStorageValue(name, value) {
+  return new Promise((resolve) => {
+    document.cookie = `${name}=${value}; path=/; max-age=3600`;
+    resolve();
+  });
 }
