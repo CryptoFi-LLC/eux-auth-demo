@@ -21,16 +21,16 @@
       <small>Only used when PKCE is enabled</small>
     </div>
 
+    <p>Decoded ID Token:</p>
+
+    <pre id="token">--</pre>
+
     <script src="./auth.js" type="module"></script>
 
     <script type="module">
-      import { storageType } from "./auth.js";
-
       document.getElementById("reloadButton").addEventListener("click", function () {
         window.location.replace(`${window.location.origin}${window.location.pathname}`);
       });
-
-      document.getElementById("storageEngine").innerText = storageType;
     </script>
   </body>
 </html>

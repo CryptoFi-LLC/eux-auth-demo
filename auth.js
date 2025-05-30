@@ -1,8 +1,10 @@
-import pkceChallenge from "./pkce-challenge.js";
+import pkceChallenge from "./lib/pkce-challenge.js";
+import { jwtDecode } from "./lib/jwt-decode.js";
+
 import { log } from "./logger.js";
 
 // When a DBP requires PKCE, the verifier code must be saved in browser storage before the user is redirected
-// to the auth URL, then retrieved when they arrive back at the callback URL (defined by the IDP). Enable ONE 
+// to the auth URL, then retrieved when they arrive back at the callback URL (defined by the IDP). Enable ONE
 // of the modules below to compare options.
 
 // Local storage
@@ -11,21 +13,7 @@ import {
   clearStorageValue,
   storageType,
   setStorageValue
-} from "./storage/localStorage.js";
-
-// // Cookies
-// import {
-//   getStorageValue,
-//   clearStorageValue,
-//   storageType,
-// } from "./storage/cookies.js";
-
-// // window.name
-// import {
-//   getStorageValue,
-//   clearStorageValue,
-//   storageType,
-// } from "./storage/windowName.js";
+} from "./storage/localStorage.js"; // One of: localStorage.js | cookies.js | windowName.js
 
 export { storageType };
 
@@ -69,7 +57,7 @@ window.onload = async function () {
       }, delay);
     }
 
-    if (hasCode) {
+    if (hasCode && getStorageValue) {
       const code = urlParams.get("code");
       log(`ℹ️ Found code parameter in URL:`, code);
 
@@ -91,7 +79,18 @@ window.onload = async function () {
       });
 
       const data = await response.json();
-      log(`✅ Auth successful:`, data);
+
+      if (data.id_token) {
+        log(`✅ Auth successful:`, data);
+
+        document.getElementById("token").innerText = JSON.stringify(
+          jwtDecode(data.id_token),
+          null,
+          2
+        );
+      } else {
+        log(`❌ Auth error:`, data.error || `Unknown error`);
+      }
 
       if (verifier) {
         clearStorageValue("verifier");
