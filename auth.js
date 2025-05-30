@@ -40,7 +40,7 @@ window.onload = async function () {
         const { code_verifier, code_challenge } = await pkceChallenge(50);
 
         redirectUrl.searchParams.set("code_challenge", code_challenge); // add code challenge to redirect URL
-        setStorageValue("verifier", code_verifier); // save code verifier in storage
+        await setStorageValue("verifier", code_verifier); // save code verifier in storage
 
         log(
           `🧚 PKCE required, code_challenge URL parameter added:`,
@@ -93,7 +93,7 @@ window.onload = async function () {
       }
 
       if (verifier) {
-        clearStorageValue("verifier");
+        await clearStorageValue("verifier");
         log(`🧹 Code verifier cleared from storage`);
       }
     }
