@@ -10,22 +10,22 @@
   <body>
     <h1>Auth demo</h1>
 
-    <div id="output"></div>
+    <div id="output" class="output-block" style="height: 400px"></div>
 
     <button id="reloadButton">Reload</button>
 
-    <div style="margin-top: 2rem; font-style: italic">
-      <p>PKCE enabled: <span id="pkceEnabled">--</span></p>
+    <div style="margin-top: 2rem">
+      <p>🧚 PKCE enabled: <span id="pkceEnabled" class="output">--</span></p>
 
       <p style="margin-bottom: 0">
-        Storage engine: <span id="storageEngine">--</span>
+        📦 Storage engine: <span id="storageEngine" class="output">--</span>
       </p>
       <small>Only used when PKCE is enabled</small>
     </div>
 
-    <p>Decoded ID Token:</p>
+    <p>🔎 Decoded ID Token:</p>
 
-    <pre id="token">--</pre>
+    <pre id="token" class="output-block">--</pre>
 
     <script src="./auth.js" type="module"></script>
 

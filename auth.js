@@ -13,7 +13,7 @@ import {
   clearStorageValue,
   storageType,
   setStorageValue
-} from "./storage/windowName.js"; // One of: localStorage.js | cookies.js | windowName.js
+} from "./storage/cacheAPI.js"; // One of: localStorage.js | cookies.js | windowName.js
 
 export { storageType };
 
@@ -62,7 +62,7 @@ window.onload = async function () {
       log(`ℹ️ Found code parameter in URL:`, code);
 
       // Add code_verifier to request if it exists
-      const verifier = getStorageValue("verifier");
+      const verifier = await getStorageValue("verifier");
       const requestBody = verifier
         ? { code, code_verifier: verifier } // pkce
         : { code }; // non pkce
