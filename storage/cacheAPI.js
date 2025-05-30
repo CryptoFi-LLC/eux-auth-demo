@@ -10,17 +10,19 @@ async function openCache() {
 export async function setStorageValue(name, value) {
   const cache = await openCache();
   const response = new Response(value);
-  await cache.put(`value:${name}`, response);
+
+  await cache.put(name, response);
 }
 
 export async function getStorageValue(name) {
   const cache = await openCache();
-  const response = await cache.match(`value:${name}`);
+  const response = await cache.match(name);
+  
   if (!response) return null;
   return await response.text();
 }
 
 export async function clearStorageValue(name) {
   const cache = await openCache();
-  await cache.delete(`value:${name}`);
+  await cache.delete(name);
 }
