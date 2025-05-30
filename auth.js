@@ -1,9 +1,32 @@
+import pkceChallenge from "./pkce-challenge.js";
 import { log } from "./logger.js";
+
+// When a DBP requires PKCE, the verifier code must be saved in browser storage before the user is redirected
+// to the auth URL, then retrieved when they arrive back at the callback URL (defined by the IDP). Enable ONE 
+// of the modules below to compare options.
+
+// Local storage
 import {
-  addCodeChallenge,
-  clearCodeVerifier,
-  getCodeVerifier,
-} from "./pkce.js";
+  getStorageValue,
+  clearStorageValue,
+  storageType,
+} from "./storage/localStorage.js";
+
+// // Cookies
+// import {
+//   getStorageValue,
+//   clearStorageValue,
+//   storageType,
+// } from "./storage/cookies.js";
+
+// // window.name
+// import {
+//   getStorageValue,
+//   clearStorageValue,
+//   storageType,
+// } from "./storage/windowName.js";
+
+export { storageType };
 
 window.onload = async function () {
   const dbpAuthEndpoint = "https://api.cryptofi-dev.com/v2/dbp/auth";
@@ -21,16 +44,26 @@ window.onload = async function () {
       });
       const data = await response.json();
       let redirectUrl = new URL(data.redirect_url);
+      const isPkceRequired = redirectUrl.searchParams.has("pkce_required");
 
       // handle PKCE if required
-      if (redirectUrl.searchParams.get("pkce_required") === "True") {
-        redirectUrl = await addCodeChallenge(redirectUrl);
+      if (isPkceRequired && redirectUrl) {
+        const { code_verifier, code_challenge } = await pkceChallenge(50);
+
+        redirectUrl.searchParams.set("code_challenge", code_challenge); // add code challenge to redirect URL
+        setStorageValue("verifier", code_verifier); // save code verifier in storage
+
+        log(
+          `🧚 PKCE required, code_challenge URL parameter added:`,
+          code_challenge
+        );
       }
 
+      document.getElementById("pkceEnabled").innerText = isPkceRequired;
       log(`ℹ️ Redirecting to auth URL...`, redirectUrl.toString());
 
+      // redirect to auth URL
       setTimeout(() => {
-        // redirect to auth URL
         window.location.replace(redirectUrl.toString());
       }, delay);
     }
@@ -40,11 +73,12 @@ window.onload = async function () {
       log(`ℹ️ Found code parameter in URL:`, code);
 
       // Add code_verifier to request if it exists
-      const verifier = getCodeVerifier();
+      const verifier = getStorageValue("verifier");
       const requestBody = verifier
         ? { code, code_verifier: verifier } // pkce
         : { code }; // non pkce
 
+      document.getElementById("pkceEnabled").innerText = Boolean(verifier);
       log(`➡️ Sending POST request to /dbp/auth:`, requestBody);
 
       const response = await fetch(dbpAuthEndpoint, {
@@ -58,7 +92,10 @@ window.onload = async function () {
       const data = await response.json();
       log(`✅ Auth successful:`, data);
 
-      clearCodeVerifier();
+      if (verifier) {
+        clearStorageValue("verifier");
+        log(`🧹 Code verifier cleared from storage`);
+      }
     }
   } catch (error) {
     log(`❌ Auth error:`, error.message);
