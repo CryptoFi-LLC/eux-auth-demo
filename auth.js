@@ -91,6 +91,8 @@ window.onload = async function () {
           2
         );
 
+        console.log(decodedToken)
+
         const expirationDate = new Date(decodedToken.exp * 1000); // Convert seconds to milliseconds
         document.getElementById("tokenExpiration").innerText = expirationDate.toLocaleString();
       } else {

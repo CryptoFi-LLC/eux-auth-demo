@@ -1,5 +1,5 @@
 /**
- * @desc Async implementation to match other storage modules.
+ * @desc Async to provide a common implementation for all storage types.
  */
 
 export const storageType = "localStorage";
