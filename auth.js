@@ -12,7 +12,7 @@ import {
   getStorageValue,
   clearStorageValue,
   storageType,
-  setStorageValue
+  setStorageValue,
 } from "./storage/cacheAPI.js"; // One of: localStorage.js | cookies.js | windowName.js | cacheAPI.js
 
 export { storageType };
@@ -91,10 +91,9 @@ window.onload = async function () {
           2
         );
 
-        console.log(decodedToken)
-
         const expirationDate = new Date(decodedToken.exp * 1000); // Convert seconds to milliseconds
-        document.getElementById("tokenExpiration").innerText = expirationDate.toLocaleString();
+        document.getElementById("tokenExpiration").innerText =
+          expirationDate.toLocaleString();
       } else {
         log(`❌ Auth error:`, data.error || `Unknown error`);
       }
