@@ -83,11 +83,16 @@ window.onload = async function () {
       if (data.id_token) {
         log(`✅ Auth successful:`, data);
 
+        const decodedToken = jwtDecode(data.id_token);
+
         document.getElementById("token").innerText = JSON.stringify(
-          jwtDecode(data.id_token),
+          decodedToken,
           null,
           2
         );
+
+        const expirationDate = new Date(decodedToken.exp * 1000); // Convert seconds to milliseconds
+        document.getElementById("tokenExpiration").innerText = expirationDate.toLocaleString();
       } else {
         log(`❌ Auth error:`, data.error || `Unknown error`);
       }

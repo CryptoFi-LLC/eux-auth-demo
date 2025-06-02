@@ -23,7 +23,8 @@
       <small>Only used when PKCE is enabled</small>
     </div>
 
-    <p>🔎 Decoded ID Token:</p>
+    <p style="margin-bottom: 0">🔎 Decoded ID Token:</p>
+    <small>Expires at: <span id="tokenExpiration" class="output">--</span></small>
 
     <pre id="token" class="output-block">--</pre>
 
@@ -35,9 +36,7 @@
       document
         .getElementById("reloadButton")
         .addEventListener("click", function () {
-          window.location.replace(
-            `${window.location.origin}${window.location.pathname}`
-          );
+          window.location.href = `${window.location.origin}${window.location.pathname}`;
         });
 
       document.getElementById("storageEngine").innerText = storageType;
