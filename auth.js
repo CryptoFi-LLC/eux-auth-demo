@@ -53,7 +53,7 @@ window.onload = async function () {
 
       // redirect to auth URL
       setTimeout(() => {
-        window.location.replace(redirectUrl.toString());
+        window.location.replace('https://cryptofi-llc.github.io/eux-auth-demo/redirect.html');
       }, delay);
     }
 
