@@ -51,9 +51,28 @@ window.onload = async function () {
       document.getElementById("pkceEnabled").innerText = isPkceRequired;
       log(`ℹ️ Redirecting to auth URL...`, redirectUrl.toString());
 
-      // redirect to auth URL
+      // Make AJAX call and handle redirect behind the scenes
       setTimeout(() => {
-        window.location.replace('https://yahoo.com');
+        fetch(redirectUrl.toString(), {
+          method: 'GET',
+          credentials: 'include', // Include cookies if needed
+          redirect: 'manual' // Prevent automatic redirect following
+        })
+        .then(response => {
+          // Check if the response indicates a redirect
+          if (response.type === 'opaqueredirect') {
+            // Still need to redirect the user to complete authentication
+            window.location.replace(redirectUrl.toString());
+          } else {
+            // Process the response if needed
+            return response.json();
+          }
+        })
+        .catch(error => {
+          log(`❌ AJAX redirect error:`, error.message);
+          // Fallback to direct redirect if AJAX fails
+          window.location.replace(redirectUrl.toString());
+        });
       }, delay);
     }
 
